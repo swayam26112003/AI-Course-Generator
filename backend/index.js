@@ -1,10 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const AuthRouter = require('./Routes/AuthRouter');
 const AiRouter = require('./Routes/AIRouter');
 const CourseRouter = require('./Routes/CourseRouter');
 
-require('dotenv').config();
 require('./Models/db');
 
 const app = express();
