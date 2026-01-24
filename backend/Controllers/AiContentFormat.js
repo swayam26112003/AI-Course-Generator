@@ -40,7 +40,7 @@ const COURSE_LAYOUT_SCHEMA = {
 
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({
-  model: "gemini-3-flash-preview",
+  model: "gemini-flash-latest",
   
   generationConfig: {
     responseMimeType: "application/json",

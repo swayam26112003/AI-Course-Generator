@@ -137,7 +137,7 @@ If applicable, provide a code example formatted as an HTML <pre><code> block.
       if (!chapter.content || chapter.content.length === 0) {
         console.log(`Generating content for ${chapter.chapterName}...`);
         await generateChapterContent(chapter);
-        await sleep(20000);
+        await sleep(40000);
       }
     }
     setIsChapterLoading(false);
