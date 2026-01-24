@@ -3,7 +3,7 @@ import CourseDetail from '@/create-course/[courseId]/_components/CourseDetail';
 import React from 'react'
 import { useEffect, useState } from "react";  
 import { useParams, Link } from "react-router-dom";  
-
+import { apiFetch } from "@/lib/api";
 
 function Course() {
   const { courseId } = useParams();  
@@ -13,7 +13,7 @@ function Course() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/course/${courseId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`);
         const data = await res.json();
         if (data.success) {
           setCourse(data.data);

@@ -12,7 +12,7 @@ function CourseStart() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/course/${courseId}`);
+       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`);
         const data = await res.json();
         if (data.success) {
           setCourse(data.data);

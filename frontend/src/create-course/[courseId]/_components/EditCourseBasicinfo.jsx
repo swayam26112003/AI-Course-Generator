@@ -46,7 +46,7 @@ function EditCourseBasicinfo({ course, onCourseUpdated }) {
     };
 
     try {
-      const res = await fetch(`http://localhost:8080/course/update/${course.courseId}`, {
+      const res = await fetch( `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),

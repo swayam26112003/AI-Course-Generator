@@ -66,7 +66,7 @@ function EditChapters({ course, index, onCourseUpdated }) {
       };
 
       const res = await fetch(
-        `http://localhost:8080/course/update/${course.courseId}`,
+         `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

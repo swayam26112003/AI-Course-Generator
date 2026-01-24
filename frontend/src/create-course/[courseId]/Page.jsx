@@ -17,7 +17,7 @@ function CourseLayout() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/course/${courseId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`);
         const data = await res.json();
         if (data.success) {
           setCourse(data.data);
@@ -60,14 +60,14 @@ const generateChapterContent = async (chapter) => {
 
     const videoQuery = `${courseName} ${chapterName} tutorial`;
 
-    const textPromise = fetch("http://localhost:8080/ai/generate-chapter", {
+    const textPromise = fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/generate-chapter`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: textPrompt }),
     });
 
     const videoPromise = fetch(
-      `http://localhost:8080/ai/get-videos?q=${encodeURIComponent(videoQuery)}`
+      `${import.meta.env.VITE_API_BASE_URL}/ai/get-videos?q=${encodeURIComponent(videoQuery)}`
     );
 
     const [textResponse, videoResponse] = await Promise.all([
@@ -90,7 +90,7 @@ const generateChapterContent = async (chapter) => {
         videos: videoData.data,
       };
 
-      await fetch("http://localhost:8080/course/save-chapter-content", {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/save-chapter-content`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(savePayload),

@@ -18,7 +18,6 @@ const formatCourseDataForAPI = (
 ) => {
   const normalizedChapters = (parsedOutput.chapters || parsedOutput.Chapters || []).map(
     (chapter, index) => {
-      // ✅ Read ALL possible AI title fields
       let chapterName =
         chapter.chapterName ||
         chapter.chapter_title ||
@@ -26,7 +25,6 @@ const formatCourseDataForAPI = (
         chapter.title ||
         chapter.name;
 
-      // 🔥 Promote title from "about" if missing or generic
       if (!chapterName || /^chapter\s*\d+/i.test(chapterName)) {
         if (chapter.about) {
           chapterName = chapter.about
@@ -51,7 +49,6 @@ const formatCourseDataForAPI = (
   );
 
   const formattedCourseOutput = {
-    // ✅ FIXED: respect AI courseName
     courseName:
       parsedOutput.courseName ||
       parsedOutput["Course Name"] ||
@@ -152,7 +149,7 @@ function CreateCourse() {
       - Description: ${userCourseInput?.description}
     `;
 
-    const response = await fetch("http://localhost:8080/ai/generate-course", {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/generate-course`,{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: FINAL_PROMPT }),
@@ -174,7 +171,7 @@ function CreateCourse() {
         userName
       );
 
-      const saveResponse = await fetch("http://localhost:8080/course/save", {
+      const saveResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(apiData), 
