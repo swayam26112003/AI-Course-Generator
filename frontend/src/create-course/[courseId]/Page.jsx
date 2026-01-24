@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import CourseBasicInfo from "./_components/CourseBasicInfo";
 import CourseDetail from "./_components/CourseDetail";
 import ChapterList from "./_components/ChapterList";
@@ -8,7 +8,7 @@ import LoadingDialog from "../_components/LoadingDialog";
 import { Loader2 } from "lucide-react";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function CourseLayout() {
-  const { courseId } = useParams(); 
+  const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,9 @@ function CourseLayout() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`,
+        );
         const data = await res.json();
         if (data.success) {
           setCourse(data.data);
@@ -43,76 +45,86 @@ function CourseLayout() {
    * @param {object} chapter
    */
 
-const generateChapterContent = async (chapter) => {
-  const courseName = course?.courseOutput?.courseName;
-  const chapterName = chapter.chapterName;
+  const generateChapterContent = async (chapter) => {
+    const courseName = course?.courseOutput?.courseName;
+    const chapterName = chapter.chapterName;
 
+    try {
+      const textPrompt = `
+Explain the concept in detail for the following:
+Topic: "${courseName}"
+Chapter: "${chapterName}"
 
-  try {
-    const textPrompt = `
-      Explain the concept in detail for the following:
-      Topic: "${courseName}"
-      Chapter: "${chapterName}"
-      
-      The explanation should be written in Hinglish (a mix of Hindi and English).
-      If applicable, provide a code example formatted as an HTML <pre><code> block.
-    `;
+The explanation should be written in Hinglish (a mix of Hindi and English).
+If applicable, provide a code example formatted as an HTML <pre><code> block.
+`;
 
-    const videoQuery = `${courseName} ${chapterName} tutorial`;
+      const videoQuery = `${courseName} ${chapterName} tutorial`;
 
-    const textPromise = fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/generate-chapter`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: textPrompt }),
-    });
+      const textResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/ai/generate-chapter`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: textPrompt }),
+        },
+      );
 
-    const videoPromise = fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/ai/get-videos?q=${encodeURIComponent(videoQuery)}`
-    );
+      if (!textResponse.ok) {
+        throw new Error("Failed to fetch AI content");
+      }
 
-    const [textResponse, videoResponse] = await Promise.all([
-      textPromise,
-      videoPromise,
-    ]);
+      const textData = await textResponse.json();
 
-    if (!textResponse.ok || !videoResponse.ok) {
-      throw new Error("Failed to fetch AI content or videos");
-    }
+      await sleep(6000);
 
-    const textData = await textResponse.json();
-    const videoData = await videoResponse.json();
+      const videoResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/ai/get-videos?q=${encodeURIComponent(videoQuery)}`,
+      );
 
-    if (textData.success && videoData.success) {
-      const savePayload = {
-        courseId: courseId,  
-        chapterName: chapterName,
-        textContent: textData.data,
-        videos: videoData.data,
-      };
+      if (!videoResponse.ok) {
+        throw new Error("Failed to fetch videos");
+      }
 
-      await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/save-chapter-content`,{
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(savePayload),
-      });
+      const videoData = await videoResponse.json();
 
-      setGeneratedContentMap((prevMap) => ({
-        ...prevMap,
-        [chapterName]: {
+      if (textData.success && videoData.success) {
+        const savePayload = {
+          courseId,
+          chapterName,
           textContent: textData.data,
           videos: videoData.data,
-        },
-      }));
+        };
 
-      console.log(`Generated content for chapter: ${chapterName}`);
+        await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/course/save-chapter-content`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(savePayload),
+          },
+        );
 
+        setGeneratedContentMap((prev) => ({
+          ...prev,
+          [chapterName]: {
+            textContent: textData.data,
+            videos: videoData.data,
+          },
+        }));
+
+        console.log(`Generated content for chapter: ${chapterName}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error generating content for ${chapterName}:`,
+        error.message,
+      );
     }
-  } catch (error) {
-    console.error(`Error generating content for ${chapterName}:`, error.message);
-  }  
-};
+  };
+
   const GenerateAllChapterContent = async () => {
-    setIsChapterLoading(true);  
+    setIsChapterLoading(true);
 
     const chapters = course?.courseOutput?.chapters;
     if (!chapters) {
@@ -128,7 +140,7 @@ const generateChapterContent = async (chapter) => {
         await sleep(20000);
       }
     }
-    setIsChapterLoading(false);  
+    setIsChapterLoading(false);
   };
   return (
     <div className="mt-10 px-7 md:px-20 lg:px-44">
