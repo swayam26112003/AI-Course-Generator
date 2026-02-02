@@ -15,30 +15,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "sonner";
 
-/**
- * 
- * @param {object} course  
- * @param {number} index  
- * @param {function} onCourseUpdated 
- */
 function EditChapters({ course, index, onCourseUpdated }) {
   const [chapterName, setChapterName] = useState("");
   const [about, setAbout] = useState("");
   const [duration, setDuration] = useState("");
-
   const [isSaving, setIsSaving] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const chapter = course?.courseOutput?.chapters[index];
 
- 
   useEffect(() => {
     if (chapter) {
       setChapterName(chapter.chapterName);
       setAbout(chapter.about);
       setDuration(chapter.duration);
     }
-  }, [chapter, isOpen]);  
+  }, [chapter, isOpen]);
 
   const handleSave = async () => {
     if (!chapterName || !about || !duration) {
@@ -50,27 +42,24 @@ function EditChapters({ course, index, onCourseUpdated }) {
 
     try {
       const newChapters = [...course.courseOutput.chapters];
-
       newChapters[index] = {
-        ...newChapters[index],  
-        chapterName: chapterName,
-        about: about,
-        duration: duration,
-      };
-
-      const updatedData = {
-        courseOutput: {
-          ...course.courseOutput,
-          chapters: newChapters,
-        },
+        ...newChapters[index],
+        chapterName,
+        about,
+        duration,
       };
 
       const res = await fetch(
-         `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify({
+            courseOutput: {
+              ...course.courseOutput,
+              chapters: newChapters,
+            },
+          }),
         }
       );
 
@@ -80,13 +69,10 @@ function EditChapters({ course, index, onCourseUpdated }) {
       }
 
       toast.success("Chapter updated successfully!");
-      if (onCourseUpdated) {
-        onCourseUpdated();  
-      }
-      setIsOpen(false);  
+      onCourseUpdated?.();
+      setIsOpen(false);
     } catch (error) {
-      console.error("Error saving chapter:", error);
-      toast.error(`Error: ${error.message}`);
+      toast.error(error.message);
     } finally {
       setIsSaving(false);
     }
@@ -100,58 +86,61 @@ function EditChapters({ course, index, onCourseUpdated }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="w-[95vw] max-w-lg sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Edit Chapter</DialogTitle>
           <DialogDescription>
-            Make changes to your chapter details here.
+            Make changes to your chapter details.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="chapterName" className="text-right">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
+            <label className="sm:text-right text-sm font-medium">
               Title
             </label>
             <Input
-              id="chapterName"
               value={chapterName}
               onChange={(e) => setChapterName(e.target.value)}
-              className="col-span-3"
+              className="sm:col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="about" className="text-right">
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
+            <label className="sm:text-right text-sm font-medium">
               About
             </label>
             <Textarea
-              id="about"
               value={about}
               onChange={(e) => setAbout(e.target.value)}
-              className="col-span-3"
-              rows={5}
+              rows={4}
+              className="sm:col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="duration" className="text-right">
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
+            <label className="sm:text-right text-sm font-medium">
               Duration
             </label>
             <Input
-              id="duration"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="col-span-3"
+              className="sm:col-span-3"
             />
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
           <DialogClose asChild>
-            <Button variant="outline" disabled={isSaving}>
+            <Button variant="outline" disabled={isSaving} className="w-full sm:w-auto">
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={handleSave} disabled={isSaving}>
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full sm:w-auto"
+          >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>

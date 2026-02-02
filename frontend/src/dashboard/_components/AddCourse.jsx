@@ -15,7 +15,7 @@ function AddCourse() {
       <div className="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm">
         <div>
           <h2 className="text-2xl font-semibold">
-            Welcome back,{" "}
+            Welcome ,{" "}
             <span className="text-indigo-600">{userName}</span>
           </h2>
           <p className="mt-2 text-sm text-gray-600">

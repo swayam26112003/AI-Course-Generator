@@ -13,19 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FaEdit } from "react-icons/fa";
-import { toast } from "sonner";  
+import { toast } from "sonner";
 
-/**
- * 
- * @param {object} course 
- * @param {function} onCourseUpdated 
- */
 function EditCourseBasicinfo({ course, onCourseUpdated }) {
   const [title, setTitle] = useState(course?.courseOutput?.courseName);
-  const [description, setDescription] = useState(course?.courseOutput?.description);
-  
+  const [description, setDescription] = useState(
+    course?.courseOutput?.description
+  );
   const [isSaving, setIsSaving] = useState(false);
-  
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = async () => {
@@ -35,90 +30,97 @@ function EditCourseBasicinfo({ course, onCourseUpdated }) {
     }
 
     setIsSaving(true);
-    
-    const updatedData = {
-      name: title, 
-      courseOutput: {
-        ...course.courseOutput, 
-        courseName: title,      
-        description: description,  
-      },
-    };
 
     try {
-      const res = await fetch( `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/course/update/${course.courseId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: title,
+            courseOutput: {
+              ...course.courseOutput,
+              courseName: title,
+              description,
+            },
+          }),
+        }
+      );
 
       const result = await res.json();
+      if (!result.success) throw new Error(result.message);
 
-      if (result.success) {
-        toast.success("Course updated successfully!");
-        if (onCourseUpdated) {
-          onCourseUpdated(); 
-        }
-        setIsOpen(false); 
-      } else {
-        throw new Error(result.message || "Failed to update course");
-      }
-    } catch (error) {
-      console.error("Error saving course:", error);
-      toast.error(`Error: ${error.message}`);
+      toast.success("Course updated successfully!");
+      onCourseUpdated?.();
+      setIsOpen(false);
+    } catch (err) {
+      toast.error(err.message);
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" title="Edit Course Details">
           <FaEdit className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      
-      <DialogContent>
+
+      <DialogContent className="w-[95vw] max-w-lg sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Edit Course Details</DialogTitle>
           <DialogDescription>
-            Make changes to your course title and description here.
+            Update your course title and description.
           </DialogDescription>
         </DialogHeader>
 
+        {/* Form */}
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="title" className="text-right">
+          {/* Title */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
+            <label className="sm:text-right text-sm font-medium">
               Title
             </label>
             <Input
-              id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="col-span-3"
+              className="sm:col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="description" className="text-right">
+
+          {/* Description */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
+            <label className="sm:text-right text-sm font-medium">
               Description
             </label>
             <Textarea
-              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="col-span-3"
-              rows={5}
+              rows={4}
+              className="sm:col-span-3"
             />
           </div>
         </div>
 
-        <DialogFooter>
+        {/* Footer */}
+        <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
           <DialogClose asChild>
-            <Button variant="outline" disabled={isSaving}>Cancel</Button>
+            <Button
+              variant="outline"
+              disabled={isSaving}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
           </DialogClose>
-          <Button onClick={handleSave} disabled={isSaving}>
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full sm:w-auto"
+          >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
