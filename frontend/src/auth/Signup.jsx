@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { handleError, handleSuccess } from "./Utils";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
     name: "",
@@ -35,12 +37,12 @@ const Signup = () => {
         body: JSON.stringify(signupInfo),
       });
       const result = await response.json();
-      const { success, message ,jwtToken,name} = result;
+      const { success, message, jwtToken, name } = result;
 
       if (success) {
         handleSuccess(message);
-        localStorage.setItem('token',jwtToken);
-        localStorage.setItem('loggedInUser',name);
+        localStorage.setItem("token", jwtToken);
+        localStorage.setItem("loggedInUser", name);
         setTimeout(() => navigate("/login"), 1000);
       } else {
         handleError(message || "Signup failed");
@@ -125,15 +127,15 @@ const Signup = () => {
         {/* Footer */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-blue-600 font-medium hover:underline"
           >
             Log in
-          </a>
+          </Link>
         </p>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

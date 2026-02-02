@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { handleError, handleSuccess } from "./Utils";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const Login = () => {
   const [loginInfo, setLoginInfo] = useState({
     email: "",
@@ -108,12 +109,12 @@ const Login = () => {
         {/* Footer */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Don’t have an account?{" "}
-          <a
-            href="/signup"
+          <Link
+            to="/signup"
             className="text-blue-600 font-medium hover:underline"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
       <ToastContainer />

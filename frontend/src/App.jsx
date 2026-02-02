@@ -4,7 +4,6 @@ import Hero from "./_components/Hero";
 import Footer from "./_components/Footer";
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
-
 import Dashboard from "./dashboard/Dashboard";
 import DashboardLayout from "./dashboard/Layout";
 import CreateCourse from "./create-course/CreateCourse";
