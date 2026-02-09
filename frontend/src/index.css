@@ -4,7 +4,6 @@
 /* styles.css */
 
 
-/* Your other CSS rules go below */
 @keyframes robotFloat {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -165,7 +164,6 @@
   page-break-inside: avoid;
 }
 
-/* HARD html2canvas SAFETY MODE */
 #pdf-export-safe-area,
 #pdf-export-safe-area * {
   color: #1e293b !important;
