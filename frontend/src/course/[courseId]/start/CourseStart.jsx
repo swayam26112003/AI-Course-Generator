@@ -11,19 +11,20 @@ function CourseStart() {
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  /* 🔒 Lock body scroll when sidebar is open (mobile) */
   useEffect(() => {
     document.body.style.overflow = isSidebarOpen ? "hidden" : "auto";
-
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isSidebarOpen]);
 
+  /* 📡 Fetch course */
   useEffect(() => {
     const fetchCourse = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`,
+          `${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`
         );
         const data = await res.json();
 
@@ -43,11 +44,11 @@ function CourseStart() {
     if (courseId) fetchCourse();
   }, [courseId]);
 
-  if (loading) return <div>Loading your course...</div>;
+  if (loading) return <div className="p-4">Loading your course...</div>;
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="md:hidden flex items-center justify-between p-4 border-b bg-white">
+    <div className="flex h-screen overflow-hidden pt-[56px] md:pt-0">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 border-b bg-white">
         <h2 className="font-semibold text-lg truncate">
           {course?.courseOutput?.courseName}
         </h2>
@@ -89,12 +90,12 @@ function CourseStart() {
                 setIsSidebarOpen(false);
               }}
               className={`cursor-pointer transition-colors
-    ${
-      selectedChapter?.chapterName === chapter?.chapterName
-        ? "bg-blue-500 text-white"
-        : "text-gray-800 hover:bg-blue-100"
-    }
-  `}
+                ${
+                  selectedChapter?.chapterName === chapter?.chapterName
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-800 hover:bg-blue-100"
+                }
+              `}
             >
               <ChapterListCard chapter={chapter} index={index} />
             </div>
@@ -102,7 +103,12 @@ function CourseStart() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
+      <div
+        className={`
+          flex-1 p-4 md:p-6 overflow-y-auto
+          ${isSidebarOpen ? "hidden md:block" : "block"}
+        `}
+      >
         {selectedChapter ? (
           <ChapterContent chapter={selectedChapter} />
         ) : (
