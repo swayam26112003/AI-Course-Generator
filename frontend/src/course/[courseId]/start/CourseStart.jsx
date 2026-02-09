@@ -12,10 +12,18 @@ function CourseStart() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = isSidebarOpen ? "hidden" : "auto";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isSidebarOpen]);
+
+  useEffect(() => {
     const fetchCourse = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`
+          `${import.meta.env.VITE_API_BASE_URL}/course/${courseId}`,
         );
         const data = await res.json();
 
@@ -75,18 +83,18 @@ function CourseStart() {
         <div className="overflow-y-auto h-full">
           {course?.courseOutput?.chapters.map((chapter, index) => (
             <div
-              key={index}
-              className={`cursor-pointer p-2
-                hover:bg-blue-400 hover:text-white
-                ${
-                  selectedChapter?.chapterName === chapter?.chapterName
-                    ? "bg-blue-500 text-white"
-                    : ""
-                }`}
+              key={chapter.chapterName}
               onClick={() => {
                 setSelectedChapter(chapter);
                 setIsSidebarOpen(false);
               }}
+              className={`cursor-pointer transition-colors
+    ${
+      selectedChapter?.chapterName === chapter?.chapterName
+        ? "bg-blue-500 text-white"
+        : "text-gray-800 hover:bg-blue-100"
+    }
+  `}
             >
               <ChapterListCard chapter={chapter} index={index} />
             </div>

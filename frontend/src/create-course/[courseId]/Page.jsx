@@ -155,12 +155,21 @@ If applicable, provide a code example formatted as an HTML <pre><code> block.
 
       <Button
         onClick={GenerateAllChapterContent}
-        className="my-10 w-xl"
         disabled={isChapterLoading}
+        className="
+    my-10
+    w-full
+    sm:w-auto
+    px-6 sm:px-10 lg:px-14
+    py-3 sm:py-4 lg:py-5
+    text-sm sm:text-base lg:text-lg
+    font-semibold
+    flex items-center justify-center
+  "
       >
-        {isChapterLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : null}
+        {isChapterLoading && (
+          <Loader2 className="mr-2 h-4 sm:h-5 lg:h-6 w-4 sm:w-5 lg:w-6 animate-spin" />
+        )}
         {isChapterLoading
           ? "Generating All Content..."
           : "Generate All Chapter Content"}

@@ -69,19 +69,20 @@ function EditCourseBasicinfo({ course, onCourseUpdated }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[95vw] max-w-lg sm:max-w-xl">
-        <DialogHeader>
+      {/* ✅ Responsive dialog */}
+      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl rounded-2xl p-4 sm:p-6">
+        <DialogHeader className="text-center sm:text-left">
           <DialogTitle>Edit Course Details</DialogTitle>
           <DialogDescription>
             Update your course title and description.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Form */}
-        <div className="grid gap-4 py-4">
+        {/* ✅ Form */}
+        <div className="grid gap-5 py-4">
           {/* Title */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
-            <label className="sm:text-right text-sm font-medium">
+            <label className="text-sm font-medium sm:text-right">
               Title
             </label>
             <Input
@@ -93,19 +94,19 @@ function EditCourseBasicinfo({ course, onCourseUpdated }) {
 
           {/* Description */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
-            <label className="sm:text-right text-sm font-medium">
+            <label className="text-sm font-medium sm:text-right">
               Description
             </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="sm:col-span-3"
+              className="sm:col-span-3 resize-none"
             />
           </div>
         </div>
 
-        {/* Footer */}
+        {/* ✅ Footer */}
         <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
           <DialogClose asChild>
             <Button

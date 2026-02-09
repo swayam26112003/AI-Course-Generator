@@ -15,14 +15,25 @@ function TopicDescription() {
   };
 
   return (
-    <div className="py-6 sm:py-10 px-4">
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-5 sm:p-8 space-y-6 sm:space-y-8 border border-gray-200">
+    <div className="py-6 sm:py-10 px-3 sm:px-6 md:px-10">
+      <div
+        className="
+          max-w-xl sm:max-w-2xl lg:max-w-3xl
+          mx-auto
+          bg-white
+          shadow-lg
+          rounded-2xl
+          p-4 sm:p-6 md:p-8
+          space-y-5 sm:space-y-8
+          border border-gray-200
+        "
+      >
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800 mb-2">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800 mb-2">
             🧠 Course Topic & Description
           </h2>
-          <p className="text-xs sm:text-sm lg:text-base text-gray-500">
+          <p className="text-xs sm:text-sm md:text-base text-gray-500">
             Provide a topic and optional details to generate your personalized course.
           </p>
         </div>
@@ -36,7 +47,7 @@ function TopicDescription() {
             Enter the topic you want to generate a course for (e.g., Python, Yoga, Web Development).
           </p>
           <Input
-            className="w-full border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+            className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
             placeholder="Enter your course topic"
             defaultValue={userCourseInput?.topic}
             onChange={(e) => handleInputChange("topic", e.target.value)}
@@ -52,7 +63,7 @@ function TopicDescription() {
             Add a few lines describing what you’d like to include (projects, level, goals, etc.).
           </p>
           <Textarea
-            className="w-full border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+            className="w-full min-h-[100px] sm:min-h-[120px] md:min-h-[150px] text-sm sm:text-base border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
             rows={4}
             placeholder="Describe your course idea"
             defaultValue={userCourseInput?.description}

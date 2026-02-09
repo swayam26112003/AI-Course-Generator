@@ -86,17 +86,17 @@ function EditChapters({ course, index, onCourseUpdated }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[95vw] max-w-lg sm:max-w-xl">
-        <DialogHeader>
+      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl rounded-2xl p-4 sm:p-6">
+        <DialogHeader className="text-center sm:text-left">
           <DialogTitle>Edit Chapter</DialogTitle>
           <DialogDescription>
             Make changes to your chapter details.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-5 py-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
-            <label className="sm:text-right text-sm font-medium">
+            <label className="text-sm font-medium sm:text-right">
               Title
             </label>
             <Input
@@ -107,19 +107,19 @@ function EditChapters({ course, index, onCourseUpdated }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
-            <label className="sm:text-right text-sm font-medium">
+            <label className="text-sm font-medium sm:text-right">
               About
             </label>
             <Textarea
               value={about}
               onChange={(e) => setAbout(e.target.value)}
               rows={4}
-              className="sm:col-span-3"
+              className="sm:col-span-3 resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 items-start">
-            <label className="sm:text-right text-sm font-medium">
+            <label className="text-sm font-medium sm:text-right">
               Duration
             </label>
             <Input
@@ -132,7 +132,11 @@ function EditChapters({ course, index, onCourseUpdated }) {
 
         <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
           <DialogClose asChild>
-            <Button variant="outline" disabled={isSaving} className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              disabled={isSaving}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
           </DialogClose>

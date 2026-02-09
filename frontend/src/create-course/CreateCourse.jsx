@@ -1,52 +1,58 @@
 import React, { useEffect, useState, useContext } from "react";
-import { HiMiniSquares2X2, HiLightBulb, HiClipboardDocumentCheck } from "react-icons/hi2";
+import {
+  HiMiniSquares2X2,
+  HiLightBulb,
+  HiClipboardDocumentCheck,
+} from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
 import SelectCategory from "./_components/SelectCategory";
 import TopicDescription from "./_components/TopicDescription";
 import SelectOption from "./_components/SelectOption";
 import { UserInputContext } from "@/_context/UserInputContext";
-import { useNavigate } from "react-router-dom";  
-import { v4 as uuidv4 } from "uuid";  
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import LoadingDialog from "./_components/LoadingDialog";
- 
+
 const formatCourseDataForAPI = (
   userInput,
   parsedOutput,
   courseId,
   email,
-  userName
+  userName,
 ) => {
-  const normalizedChapters = (parsedOutput.chapters || parsedOutput.Chapters || []).map(
-    (chapter, index) => {
-      let chapterName =
-        chapter.chapterName ||
-        chapter.chapter_title ||
-        chapter.Chapter_Name ||
-        chapter.title ||
-        chapter.name;
+  const normalizedChapters = (
+    parsedOutput.chapters ||
+    parsedOutput.Chapters ||
+    []
+  ).map((chapter, index) => {
+    let chapterName =
+      chapter.chapterName ||
+      chapter.chapter_title ||
+      chapter.Chapter_Name ||
+      chapter.title ||
+      chapter.name;
 
-      if (!chapterName || /^chapter\s*\d+/i.test(chapterName)) {
-        if (chapter.about) {
-          chapterName = chapter.about
-            .replace(/\n/g, " ")
-            .split(".")[0]
-            .slice(0, 80)
-            .trim();
-        } else {
-          chapterName = `Chapter ${index + 1}`;
-        }
+    if (!chapterName || /^chapter\s*\d+/i.test(chapterName)) {
+      if (chapter.about) {
+        chapterName = chapter.about
+          .replace(/\n/g, " ")
+          .split(".")[0]
+          .slice(0, 80)
+          .trim();
+      } else {
+        chapterName = `Chapter ${index + 1}`;
       }
-
-      return {
-        chapterName,
-        about: chapter.about || chapter.About || "No description provided.",
-        duration:
-          chapter.duration ||
-          chapter.Duration ||
-          `${chapter.duration_minutes || 15} Minutes`,
-      };
     }
-  );
+
+    return {
+      chapterName,
+      about: chapter.about || chapter.About || "No description provided.",
+      duration:
+        chapter.duration ||
+        chapter.Duration ||
+        `${chapter.duration_minutes || 15} Minutes`,
+    };
+  });
 
   const formattedCourseOutput = {
     courseName:
@@ -61,19 +67,11 @@ const formatCourseDataForAPI = (
       "No description provided.",
 
     category:
-      parsedOutput.category ||
-      parsedOutput.Category ||
-      userInput?.Category,
+      parsedOutput.category || parsedOutput.Category || userInput?.Category,
 
-    topic:
-      parsedOutput.topic ||
-      parsedOutput.Topic ||
-      userInput?.topic,
+    topic: parsedOutput.topic || parsedOutput.Topic || userInput?.topic,
 
-    level:
-      parsedOutput.level ||
-      parsedOutput.Level ||
-      userInput?.level,
+    level: parsedOutput.level || parsedOutput.Level || userInput?.level,
 
     totalDurationSummary:
       parsedOutput.totalDurationSummary ||
@@ -103,27 +101,23 @@ const formatCourseDataForAPI = (
   };
 };
 
-
-
-
 function CreateCourse() {
   const [activeIndex, setActiveIndex] = useState(0);
   const { userCourseInput, setUserCourseInput } = useContext(UserInputContext);
-  
-  
+
   const [loading, setLoading] = useState(false);
   const [generatedCourse, setGeneratedCourse] = useState(null);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState(""); 
+  const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
-  
+
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
     const storedName = localStorage.getItem("userName");
-    
-    setEmail(storedEmail || "user@example.com");  
-    setUserName(storedName || "Guest");  
+
+    setEmail(storedEmail || "user@example.com");
+    setUserName(storedName || "Guest");
   }, []);
 
   const StepperOptions = [
@@ -149,33 +143,39 @@ function CreateCourse() {
       - Description: ${userCourseInput?.description}
     `;
 
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/generate-course`,{
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: FINAL_PROMPT }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/ai/generate-course`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: FINAL_PROMPT }),
+      },
+    );
 
     const data = await response.json();
     console.log("Generated Response:", data);
 
     if (data.success) {
-      const parsed = data.data; 
-      setGeneratedCourse(parsed); 
+      const parsed = data.data;
+      setGeneratedCourse(parsed);
       const courseId = uuidv4();
 
       const apiData = formatCourseDataForAPI(
-        userCourseInput, 
-        parsed,          
+        userCourseInput,
+        parsed,
         courseId,
         email,
-        userName
+        userName,
       );
 
-      const saveResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/course/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(apiData), 
-      });
+      const saveResponse = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/course/save`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(apiData),
+        },
+      );
 
       if (!saveResponse.ok) {
         const errorData = await saveResponse.json();
@@ -183,15 +183,13 @@ function CreateCourse() {
       }
 
       navigate(`/create-course/${courseId}`);
-
     } else {
       console.error("AI generation failed:", data.message || data.error);
       if (data.rawText) {
         console.error("AI returned this invalid text:", data.rawText);
       }
     }
-    
- 
+
     setLoading(false);
   };
 
@@ -238,11 +236,7 @@ function CreateCourse() {
                 </div>
                 <h2
                   className={`hidden md:block text-sm mt-2 
-                    ${
-                      activeIndex >= index
-                        ? "text-black"
-                        : "text-gray-500"
-                    }
+                    ${activeIndex >= index ? "text-black" : "text-gray-500"}
                   `}
                 >
                   {item.name}
@@ -251,11 +245,7 @@ function CreateCourse() {
               {index !== StepperOptions.length - 1 && (
                 <div
                   className={`h-1 w-[50px] md:w-[100px] lg:w-[170px] rounded-full 
-                    ${
-                      activeIndex - 1 >= index
-                        ? "bg-black"
-                        : "bg-gray-300"
-                    }
+                    ${activeIndex - 1 >= index ? "bg-black" : "bg-gray-300"}
                   `}
                 ></div>
               )}
@@ -274,11 +264,19 @@ function CreateCourse() {
         )}
       </div>
 
-      <div className="flex justify-center gap-250 mt-10">
+      <div
+        className="
+  flex flex-col sm:flex-row
+  items-center justify-center
+  gap-4 sm:gap-10
+  mt-10
+"
+      >
         <Button
           size="lg"
           disabled={activeIndex === 0}
           onClick={() => setActiveIndex(activeIndex - 1)}
+          className="w-full sm:w-auto"
         >
           Previous
         </Button>
@@ -288,15 +286,18 @@ function CreateCourse() {
             disabled={checkStatus()}
             size="lg"
             onClick={() => setActiveIndex(activeIndex + 1)}
+            className="w-full sm:w-auto"
           >
             Next
           </Button>
         )}
+
         {activeIndex == 2 && (
           <Button
             disabled={checkStatus() || loading}
             size="lg"
-            onClick={GenerateCourseLayout} 
+            onClick={GenerateCourseLayout}
+            className="w-full sm:w-auto"
           >
             {loading ? "Generating..." : "Generate Course Layout"}
           </Button>

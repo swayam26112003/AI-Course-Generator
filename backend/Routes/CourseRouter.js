@@ -151,21 +151,23 @@ router.get("/:courseId", async (req, res) => {
 router.put("/update/:courseId", async (req, res) => {
   try {
     const { courseId } = req.params;
-    const updates = req.body;
+    const { name, courseOutput } = req.body;
 
-    const course = await CourseModel.findOne({ courseId: courseId });
+    const course = await CourseModel.findOne({ courseId });
     if (!course) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Course not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
     }
 
-    if (updates.name) course.name = updates.name;
+    if (name) {
+      course.name = name;
+    }
 
-    if (updates.courseOutput) {
-      course.courseOutput = updates.courseOutput;
-
-      course.markModified("courseOutput");
+    if (courseOutput?.chapters) {
+      course.courseOutput.chapters = courseOutput.chapters;
+      course.markModified("courseOutput.chapters");
     }
 
     await course.save();
@@ -176,15 +178,6 @@ router.put("/update/:courseId", async (req, res) => {
       data: course,
     });
   } catch (error) {
-    if (error.name === "ValidationError") {
-      console.error("Validation Error:", error.message);
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        error: error.message,
-      });
-    }
-
     console.error("Error updating course:", error);
     res.status(500).json({
       success: false,
@@ -193,6 +186,7 @@ router.put("/update/:courseId", async (req, res) => {
     });
   }
 });
+
 
 router.post("/save-chapter-content", async (req, res) => {
   try {

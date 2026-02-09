@@ -21,20 +21,28 @@ function SelectOption() {
   };
 
   return (
-    <div className="py-6 sm:py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-5 sm:p-8 border border-gray-200">
+    <div className="py-6 sm:py-10 px-3 sm:px-6 md:px-10">
+      <div className="
+        max-w-xl sm:max-w-3xl lg:max-w-4xl
+        mx-auto
+        bg-white
+        shadow-lg
+        rounded-2xl
+        p-4 sm:p-6 md:p-8
+        border border-gray-200
+      ">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-10">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800">
             ⚙️ Course Configuration
           </h2>
-          <p className="text-gray-500 text-xs sm:text-sm lg:text-base mt-2">
+          <p className="text-gray-500 text-xs sm:text-sm md:text-base mt-2">
             Customize your course options — choose difficulty, duration, and chapters.
           </p>
         </div>
 
         {/* Form Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8">
           {/* Difficulty */}
           <div>
             <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
@@ -44,7 +52,7 @@ function SelectOption() {
               onValueChange={(value) => handleInputChange("level", value)}
               defaultValue={userCourseInput?.level}
             >
-              <SelectTrigger className="h-12 sm:h-14 text-sm sm:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl">
+              <SelectTrigger className="h-11 sm:h-14 text-sm sm:text-base md:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl">
                 <SelectValue placeholder="Select difficulty level" />
               </SelectTrigger>
               <SelectContent>
@@ -64,7 +72,7 @@ function SelectOption() {
               onValueChange={(value) => handleInputChange("duration", value)}
               defaultValue={userCourseInput?.duration}
             >
-              <SelectTrigger className="h-12 sm:h-14 text-sm sm:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl">
+              <SelectTrigger className="h-11 sm:h-14 text-sm sm:text-base md:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl">
                 <SelectValue placeholder="Select duration" />
               </SelectTrigger>
               <SelectContent>
@@ -84,7 +92,7 @@ function SelectOption() {
             </label>
             <Input
               type="number"
-              className="h-12 sm:h-14 text-sm sm:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl"
+              className="h-11 sm:h-14 text-sm sm:text-base md:text-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl"
               value={userCourseInput?.noOfChapters || ""}
               placeholder="Enter number of chapters"
               onChange={(event) =>
